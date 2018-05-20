@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         drawCar.cpp \
-    sensor_server.cpp
+    sensor_server.cpp \
+    car.cpp
 
 HEADERS  += drawCar.h \
-    sensor_server.h
+    sensor_server.h \
+    car.h
 
 
 

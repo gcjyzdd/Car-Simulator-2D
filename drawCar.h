@@ -3,27 +3,20 @@
 #include <QWidget>
 #include <QThread>
 #include <QLabel>
-#include <math.h>
 
+#include "car.h"
 #include "sensor_server.h"
 
-const float D2R = M_PI / 180.;
-const float R2D = 180. / M_PI;
 
-
-struct Point
-{
-    float x, y;
-};
-
-class Lines : public QWidget
+class DrawWorld : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Lines(QWidget *parent = 0);
-    ~Lines();
+    explicit DrawWorld(QWidget *parent = 0);
+    ~DrawWorld();
 
 protected:
+    Car car;
     int height, width;
     int min_x, max_x, min_y, max_y;
     float theta, psi;

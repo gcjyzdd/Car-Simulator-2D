@@ -3,14 +3,14 @@
 
 #include "drawCar.h"
 
-QPoint Lines::w2i(Point p)
+QPoint DrawWorld::w2i(Point p)
 {
     return QPoint((p.x - min_x) * scale, height - (p.y - min_y) * scale);
 }
 
-Lines::~Lines(){}
+DrawWorld::~DrawWorld(){}
 
-Lines::Lines(QWidget *parent)
+DrawWorld::DrawWorld(QWidget *parent)
     : QWidget(parent)
 {
     width = 960;
@@ -43,7 +43,7 @@ Lines::Lines(QWidget *parent)
     connect(&server, SIGNAL(clientReady()), this, SLOT(bindClient()));
 }
 
-void Lines::paintEvent(QPaintEvent *e)
+void DrawWorld::paintEvent(QPaintEvent *e)
 {
 
     Q_UNUSED(e);
@@ -52,7 +52,7 @@ void Lines::paintEvent(QPaintEvent *e)
     this->update();
 }
 
-void Lines::updateDraw()
+void DrawWorld::updateDraw()
 {
     QPainter qp(this);
     drawLines(&qp);
@@ -60,7 +60,7 @@ void Lines::updateDraw()
     this->resize(width, height);
 }
 
-void Lines::drawLines(QPainter *qp)
+void DrawWorld::drawLines(QPainter *qp)
 {
 
     Point p1, p2, p3, p4;
@@ -70,7 +70,7 @@ void Lines::drawLines(QPainter *qp)
     p2.x = veh.x + Lf * cos(theta * D2R);
     p2.y = veh.y + Lf * sin(theta * D2R);
 
-    std::cout<<"psi = "<< psi << std::endl;
+    //std::cout<<"psi = "<< psi << std::endl;
     p3.x = p2.x - D / 2. * cos((theta + psi) * D2R);
     p3.y = p2.y - D / 2. * sin((theta + psi) * D2R);
 
@@ -92,7 +92,7 @@ void Lines::drawLines(QPainter *qp)
     qp->drawLine(P3.x(), P3.y(), P4.x(), P4.y());
 }
 
-void Lines::updateLabel(std::vector<float> &f3)
+void DrawWorld::updateLabel(std::vector<float> &f3)
 {
     char s[128];
     sprintf(s,"x: %2.3f\ty: %2.3f\tz: %2.3f", f3[0],f3[1],f3[2]);    
@@ -104,7 +104,7 @@ void Lines::updateLabel(std::vector<float> &f3)
 
 }
 
-void Lines::bindClient()
+void DrawWorld::bindClient()
 {
     connect(server.client_socket, SIGNAL(dataReady(std::vector<float> &)), this, SLOT(updateLabel(std::vector<float>&)));
 }
