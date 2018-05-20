@@ -18,7 +18,7 @@ void Wheel::updatePts()
     for(int i=0;i<4;i++)
     {
         pts[i].x = cos(theta) * x[i] - sin(theta) * y[i] + x_shift;
-        pts[i].y = -sin(theta) * x[i] + cos(theta) * y[i] + y_shift;
+        pts[i].y = sin(theta) * x[i] + cos(theta) * y[i] + y_shift;
     }
 }
 
@@ -30,11 +30,12 @@ Car::Car()
     Lh = 1.0;
     D = 0.34*2.;
     Lrear = 1.28;
-    m_x = m_y = m_theta = m_v = 0.;
+    m_x = m_y = m_v = 0.;
+    m_theta = 90. *D2R;
     m_z = 0.55;
 
-    m_psi = 30*D2R;
-    tyre_width = 0.2;
+    m_psi = 15*D2R;
+    tyre_width = 0.4;
 
     acc_max = 10;
     acc_min = -9.8;
@@ -45,6 +46,9 @@ Car::Car()
     dt = 1/30.;
     throtle = 0.;
     steer = 0.;
+
+    initPts();
+    updateWheel();
 }
 
 void Car::initPts()
@@ -75,12 +79,21 @@ void Car::updateWheel()
     y[2] = -width / 2.;
     y[3] = width / 2.;
 
-    for(int i=0;i<4;i++)
+    for(int i=0;i<2;i++)
     {
         wheels[i].x_shift = x[i];
         wheels[i].y_shift = y[i];
         wheels[i].D = D;
         wheels[i].theta = m_psi;
+        wheels[i].width = tyre_width;
+        wheels[i].updatePts();
+    }
+    for(int i=2;i<4;i++)
+    {
+        wheels[i].x_shift = x[i];
+        wheels[i].y_shift = y[i];
+        wheels[i].D = D;
+        wheels[i].theta = 0;
         wheels[i].width = tyre_width;
         wheels[i].updatePts();
     }

@@ -28,10 +28,11 @@ protected:
 
     void paintEvent(QPaintEvent *event);
     void drawLines(QPainter *qp);
+    void drawCar(QPainter *qp);
     void updateDraw();
 
-    QPoint w2i(Point p);
-
+    QPoint w2i(Point &p);
+    Point  v2w(Point &p, CS &cs);
     QThread tcp_listen_;
 
     SensorServer server;

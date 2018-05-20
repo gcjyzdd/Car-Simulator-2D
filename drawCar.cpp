@@ -3,9 +3,15 @@
 
 #include "drawCar.h"
 
-QPoint DrawWorld::w2i(Point p)
+QPoint DrawWorld::w2i(Point &p)
 {
     return QPoint((p.x - min_x) * scale, height - (p.y - min_y) * scale);
+}
+
+Point DrawWorld::v2w(Point &p, CS &cs)
+{
+    return Point(cos(cs.theta)*p.x - sin(cs.theta)*p.y+cs.x,
+                 sin(cs.theta)*p.x + cos(cs.theta)*p.y+cs.y);
 }
 
 DrawWorld::~DrawWorld(){}
@@ -17,8 +23,8 @@ DrawWorld::DrawWorld(QWidget *parent)
     height = 720;
     scale_xy = (float)height / width;
 
-    min_x = -3;
-    max_x = 3;
+    min_x = -6;
+    max_x = 6;
     min_y = min_x * scale_xy;
     max_y = max_x * scale_xy;
 
@@ -39,7 +45,7 @@ DrawWorld::DrawWorld(QWidget *parent)
     {
         std::cerr<<"Failed to bind to port"<<std::endl;
     }
-
+    std::cout<<"car.pts[0] = "<<car.pts[0].x <<","<< car.pts[0].y<<std::endl;
     connect(&server, SIGNAL(clientReady()), this, SLOT(bindClient()));
 }
 
@@ -55,8 +61,8 @@ void DrawWorld::paintEvent(QPaintEvent *e)
 void DrawWorld::updateDraw()
 {
     QPainter qp(this);
-    drawLines(&qp);
-
+    //drawLines(&qp);
+    drawCar(&qp);
     this->resize(width, height);
 }
 
@@ -89,19 +95,56 @@ void DrawWorld::drawLines(QPainter *qp)
     qp->drawLine(P1.x(), P1.y(), P2.x(), P2.y());
 
     pen.setColor(Qt::red);
+    qp->setPen(pen);
     qp->drawLine(P3.x(), P3.y(), P4.x(), P4.y());
+}
+
+void DrawWorld::drawCar(QPainter *qp)
+{
+    QPen pen(Qt::black, 2, Qt::SolidLine);
+    qp->setPen(pen);
+    QPoint pCar[4];
+    Point ptmp[4];
+
+    CS cs(car.x(), car.y(), car.theta());
+    for(int i=0;i<4;i++)
+    {
+        ptmp[i] = v2w(car.pts[i], cs);
+        pCar[i] = w2i(ptmp[i]);
+    }
+    for(int i=0;i<4;i++)
+    {
+        qp->drawLine(pCar[i], pCar[(i+1)%4]);
+    }
+
+    pen.setColor(Qt::red);
+    qp->setPen(pen);
+    QPoint pWheel[4];
+    for(int j=0;j<4;j++)
+    {
+        for(int i=0;i<4;i++)
+        {
+            ptmp[i] = v2w(car.wheels[j].pts[i], cs);
+            pWheel[i] = w2i(ptmp[i]);
+        }
+        for(int i=0;i<4;i++)
+        {
+            qp->drawLine(pWheel[i], pWheel[(i+1)%4]);
+        }
+    }
 }
 
 void DrawWorld::updateLabel(std::vector<float> &f3)
 {
     char s[128];
-    sprintf(s,"x: %2.3f\ty: %2.3f\tz: %2.3f", f3[0],f3[1],f3[2]);    
+    sprintf(s,"x: %2.3f\ty: %2.3f\tz: %2.3f", f3[0],f3[1],f3[2]);
     QString str(s);
     //std::cout<<s<<std::endl;
     l_xyz->setText(str);
     float g = sqrt(pow(f3[0],2) + pow(f3[1],2) + pow(f3[2],2));
     psi = -asin(f3[1]/g) * R2D;
-
+    car.setPsi(-asin(f3[1]/g));
+    car.updateWheel();
 }
 
 void DrawWorld::bindClient()

@@ -9,8 +9,20 @@ const float R2D = 180. / M_PI;
 struct Point
 {
     float x, y;
+
+    Point(){}
+    Point(float x_, float y_){x=x_;y=y_;}
 };
 
+struct CS
+{
+    float x, y, theta;
+    CS(){}
+    CS(float x_, float y_, float theta_)
+    {
+        x=x_; y=y_;theta=theta_;
+    }
+};
 
 class Wheel
 {
