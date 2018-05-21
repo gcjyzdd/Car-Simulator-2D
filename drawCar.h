@@ -7,6 +7,13 @@
 #include "car.h"
 #include "sensor_server.h"
 
+using std::vector;
+
+class World
+{
+    Car car;
+    vector<vector<Point>> Road;
+};
 
 class DrawWorld : public QWidget
 {
