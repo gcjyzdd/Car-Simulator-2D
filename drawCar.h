@@ -9,10 +9,16 @@
 
 using std::vector;
 
+float polyval(float x, vector<float> &p);
+
 class World
 {
+public:
     Car car;
     vector<vector<Point>> Road;
+
+public:
+    void initRoad();
 };
 
 class DrawWorld : public QWidget
@@ -23,7 +29,8 @@ public:
     ~DrawWorld();
 
 protected:
-    Car car;
+    World world;
+
     int height, width;
     int min_x, max_x, min_y, max_y;
     float theta, psi;
