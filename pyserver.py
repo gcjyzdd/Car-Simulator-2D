@@ -23,9 +23,9 @@ while 1:
 		if not data: continue#continue#break
 #		print "data len = ", len(data)
 		## Uncomment the following to print floats
-		f3 = struct.unpack('>fff', data[0:12])
-#		print "received data:", f3[0], " ", f3[1], " ", f3[2]
-		buf = struct.pack('<3f', *f3)#[0],f3[1],f3[2])
+		f4 = struct.unpack('>4f', data[0:16])
+#		print "received data:", f4[0], " ", f4[1], " ", f4[2], " ", f4[3]
+		buf = struct.pack('<4f', *f4)#[0],f4[1],f4[2])
 		s2.send(buf)
 	except:
 		break

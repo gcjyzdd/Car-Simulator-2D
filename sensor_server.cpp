@@ -22,10 +22,10 @@ SensorClient::SensorClient(QObject *parent):QTcpSocket(parent)
 void SensorClient::readClient()
 {
     QDataStream in(this);
-    int len = 12;
-    std::vector<float> f3(3);
+    int len = 16;
+    std::vector<float> f4(4);
 
-    in.readRawData((char*)f3.data(), len);
+    in.readRawData((char*)f4.data(), len);
 
-    emit dataReady(f3);
+    emit dataReady(f4);
 }
